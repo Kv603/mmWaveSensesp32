@@ -44,6 +44,13 @@ build/
 Build/
 build-*/
 
+# My files
+EspStackTraceDecoder.jar
+debug.bat
+secrets.h
+_tmp_repo_inspect
+.vscode/
+
 # CMake generated files
 CMakeFiles/
 CMakeCache.txt
