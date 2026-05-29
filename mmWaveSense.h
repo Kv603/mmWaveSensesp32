@@ -384,6 +384,7 @@ void display_RSSI(boolean serial = false, long rssi = RSSI_UNKNOWN);
 char *RemoveCharacter(char unwanted, char *str);
 const char *uniqueID(boolean force = false);
 const char *hostName();  // Like Unique ID, but doesn't change when mode changes
+char * make_state_topic(); // Make the HomeAssistant state topic
 
 char NodeID[BUFFER_SIZE];
 char NodeIDshort[20] = "Pre-Init";
@@ -477,6 +478,7 @@ char MQTTReasonText[TOPICBUFFERSIZE * 2] = NOTYETDISCONNECTED;
 
 char MQTTreport[URLBUFSIZE];
 char MQTTtopic[TOPICBUFFERSIZE];
+char MQTT_state_topic[TOPICBUFFERSIZE];
 
 char IotPlotterResponseString[ERRBUFSIZE] = "uninit";
 

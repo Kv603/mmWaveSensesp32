@@ -450,6 +450,7 @@ void readNVS() {
 
   bytes = SavedNVS.getString(nvs_whereword, Where, (size_t)BUFFER_SIZE - 1);
   if (!bytes) strcpy(Where, shortID());
+  make_state_topic();  // Populate state_topic from current name
 
   bytes = SavedNVS.getString(nvs_MQTTServer, MQTTserver, (size_t)sizeof(MQTTserver) - 1);
   if (bytes) log_w("Populated MQTTServer from NVS with '%s'", MQTTserver);
@@ -545,6 +546,7 @@ inline void writeNVS() {
     if (!bytes || (bytes && strncmp(Where, buffer, (size_t)sizeof(Where) - 1)))
       SavedNVS.putString(nvs_whereword, Where);
   }
+  make_state_topic();  // Populate state_topic from current name
   log_d("Closing NVS");
   SavedNVS.end();
   log_i("Closed NVS");
@@ -776,16 +778,16 @@ void setup() {
     do_delay(SleepDuration * 2);
     BlankRetainedRadarMQTT();
   }
-  
+
   if (ForceInitStaticMemory) {
     // Blank out all of our RTC_NOINIT_ATTR globals
     LastRadarMessageTime = 0;
-    BodySignBaseVal=254;
+    BodySignBaseVal = 254;
     LastIOTPlotterAttemptTime = getNow();
     LastHealthCheck = 0;
     LastHealthCheckSuccess = 0;
   } else {
-    if(BodySignBaseVal>254) BodySignBaseVal=254;
+    if (BodySignBaseVal > 254) BodySignBaseVal = 254;
   }
 
 // this defaults to false
@@ -821,6 +823,7 @@ void setup() {
 
 ///////////////////////////////
 inline void DoPurge() {
+    make_state_topic(); // Populate state_topic from current name
   if (0 == strcmp(Where, OldName)) {
     log_i("Name has not changed, nothing to do!");
     bzero(OldName, sizeof(OldName));
@@ -1580,6 +1583,7 @@ void setupwebserver(const char *user, const char *pass) {
                   strcpy(OldName, Where);
                   bzero(Where, sizeof(Where));
                   strncpy(Where, p->value().c_str(), sizeof(Where) - 1);
+                    make_state_topic(); // Populate state_topic from current name
                   UpdatedModes = false;
                   if (nvsok && strlen(Where) && strcmp(Where, TAG))
                     SavedNVS.putString(nvs_whereword, p->value());
@@ -2091,7 +2095,7 @@ String processor(const String &var) {
     if (var == "PLOTTERCODE") return String(LastPlotterRequestCode);
     return result;
   }
- 
+
 
   if (var[0] == 'R') {
     if (var == "RADARMESSAGE") return String(RadarMessage);

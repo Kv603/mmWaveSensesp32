@@ -1012,6 +1012,14 @@ inline void WarnDisabled() {
   log_w("Sensor is disabled '%s'", DisableSensor);
 }
 
+//////////////////////////////////////////////////
+// Fills in our state_topic for homeassistant autodiscovery
+//
+char * make_state_topic() {
+  snprintf(MQTT_state_topic, sizeof(MQTT_state_topic) - 1, "sensor/%s/%s", Where, "presence");
+  return(MQTT_state_topic);
+}
+
 ////////////////
 void publish_presence(int value) {
 
@@ -1029,7 +1037,7 @@ void publish_presence(int value) {
   }
 
   bzero(MQTTreport, sizeof(MQTTreport));
-  snprintf(MQTTtopic, sizeof(MQTTtopic) - 1, "sensor/%s/%s", Where, "presence");
+  
 
 
 
